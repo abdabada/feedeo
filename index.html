@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Vimeo Feed</title>
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+	<div class="container">
+		<div class="row header">
+			<div class="col-md-12 text-center">
+				<h3>Ceci n'est pas un feed !</h3>
+				<input type="text" class="form-control" id="search" placeholder="Search">
+				<!-- User likes filter -->
+				<div class="checkbox">
+		            <label>
+		              <input type="checkbox" name="likes">
+		              Users that have more than 10 likes
+		            </label>
+		        </div>
+		        <!-- Number of results filter -->
+				<div class="btn-group" role="group" aria-label="...">
+				  <button type="button" id="10" class="btn btn-default active">10</button>
+				  <button type="button" id="25" class="btn btn-default">25</button>
+				  <button type="button" id="50" class="btn btn-default">50</button>
+				</div><br><br>
+
+				
+					<button id="btn_prev"><i class="glyphicon glyphicon-chevron-left"></i></button>
+					<button id="btn_next"><i class="glyphicon glyphicon-chevron-right"></i></button>
+					
+					<span id="page"></span>
+					<br><br>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Vimeo feed</h3> 
+			</div>					
+		</div>
+	</div>
+
+<!-- Javascript -->
+<script src="assets/js/jquery-3.1.1.min.js"></script>
+<script src="assets/js/jquery-ui.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/feed.js"></script>
+</body>
+</html>
