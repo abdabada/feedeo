@@ -3,24 +3,24 @@
 
 	/**
 	 * Builds the necessary markup for a single field html element
-	 * @param  {Array} adData  The object that has the feed data to present
+	 * @param  {Array} feedData  The object that has the feed data to present
 	 * @return {String}        The full html markup for the feed
 	 */
-	function buildSingleFeed(adData) {
+	function buildSingleFeed(feedData) {
 		var profile_img;
-	    var profile = adData.user.name;
-	   	var profile_link = adData.user.link;
-		var sizes = adData.user.pictures;				
-		var title = adData.name;
-	    var title_link = adData.link;
-	    var description = adData.description;
-	    var plays = adData.stats.plays;
-	    var likes = adData.metadata.connections.likes.total;
-	    var comments = adData.metadata.connections.comments.total; 
+	    var profile = feedData.user.name;
+	   	var profile_link = feedData.user.link;
+		var sizes = feedData.user.pictures;				
+		var title = feedData.name;
+	    var title_link = feedData.link;
+	    var description = feedData.description;
+	    var plays = feedData.stats.plays;
+	    var likes = feedData.metadata.connections.likes.total;
+	    var comments = feedData.metadata.connections.comments.total; 
 
    		/* Making sure that the user has a picture */
-	    if (adData.user.pictures) {
-		    $.each(adData.user.pictures.sizes, function(property, value) {
+	    if (feedData.user.pictures) {
+		    $.each(feedData.user.pictures.sizes, function(property, value) {
 		    	if (property == 1) profile_img = value.link;
 		    });
 	    } else profile_img = "default.png";
@@ -63,13 +63,13 @@
 
 	/**
 	 * The array holding feed elements
-	 * @param  {Array} adsDataArr
+	 * @param  {Array} feedDataArray
 	 * @return {String}
 	 */
-	function buildAdsFeedMarkup(adsDataArr) {
+	function buildAdsFeedMarkup(feedDataArray) {
 		var markup = '';
-	    $.each(adsDataArr, function(i, adData) {
-	    	markup += buildSingleFeed(adData);
+	    $.each(feedDataArray, function(i, feedData) {
+	    	markup += buildSingleFeed(feedData);
 	    });
 	    return markup;
 	}
@@ -115,7 +115,7 @@
 
 		/* Grabs the data from the json file */
 		$.getJSON('./feed.json', function(data) {
-			var adsData = data.data;
+			var feedsData = data.data;
 
 			/* 10-per-page button handler */
 			$('#10').click(function(e) {
@@ -134,7 +134,7 @@
 				paginationWatcher.segmentation = segmentation_helper - 1;
 				paginationWatcher.currentPage = 0;
 
-				var feeds = adsData.slice(paginationWatcher.segmentation * paginationWatcher.currentPage, paginationWatcher.segmentation);
+				var feeds = feedsData.slice(paginationWatcher.segmentation * paginationWatcher.currentPage, paginationWatcher.segmentation);
 
 				if (likesFilter.isLikesFilterChecked) {
 					feeds = feeds.filter(function(singleFeed) {
@@ -162,7 +162,7 @@
 				paginationWatcher.segmentation = segmentation_helper - 1;
 				paginationWatcher.currentPage = 0;
 
-				var feeds = adsData.slice(paginationWatcher.segmentation * paginationWatcher.currentPage, paginationWatcher.segmentation);
+				var feeds = feedsData.slice(paginationWatcher.segmentation * paginationWatcher.currentPage, paginationWatcher.segmentation);
 
 				if (likesFilter.isLikesFilterChecked) {
 					feeds = feeds.filter(function(singleFeed) {
@@ -191,7 +191,7 @@
 				paginationWatcher.segmentation = segmentation_helper - 1;
 				paginationWatcher.currentPage = 0;
 
-				var feeds = adsData.slice(paginationWatcher.segmentation * paginationWatcher.currentPage, paginationWatcher.segmentation);
+				var feeds = feedsData.slice(paginationWatcher.segmentation * paginationWatcher.currentPage, paginationWatcher.segmentation);
 				
 				if (likesFilter.isLikesFilterChecked) {
 					feeds = feeds.filter(function(singleFeed) {
@@ -209,7 +209,7 @@
 				paginationWatcher.currentPage = paginationWatcher.segmentation + 1 ;
 				paginationWatcher.segmentation = paginationWatcher.segmentation + segmentation_helper;
 
-				var feeds = adsData.slice((paginationWatcher.currentPage), paginationWatcher.segmentation);
+				var feeds = feedsData.slice((paginationWatcher.currentPage), paginationWatcher.segmentation);
 
 				if (likesFilter.isLikesFilterChecked) {
 					feeds = feeds.filter(function(singleFeed) {
@@ -219,7 +219,7 @@
 
 				scene.render(buildAdsFeedMarkup(feeds));
 
-				if(paginationWatcher.segmentation == (adsData.length - 1)){
+				if(paginationWatcher.segmentation == (feedsData.length - 1)){
 					$(this).attr('disabled', true);
 					return true;
 				}
@@ -233,7 +233,7 @@
 				paginationWatcher.segmentation = paginationWatcher.currentPage - 1;
 				paginationWatcher.currentPage = (paginationWatcher.segmentation + 1) - segmentation_helper;
 			
-				var feeds = adsData.slice((paginationWatcher.currentPage), paginationWatcher.segmentation);
+				var feeds = feedsData.slice((paginationWatcher.currentPage), paginationWatcher.segmentation);
 
 				if (likesFilter.isLikesFilterChecked) {
 					feeds = feeds.filter(function(singleFeed) {
@@ -255,7 +255,7 @@
 		    	if ($(this).prop('checked')) {
 					scene.render(
 						buildAdsFeedMarkup(
-							adsData.slice((paginationWatcher.currentPage), paginationWatcher.segmentation).filter(function(singleFeed) {
+							feedsData.slice((paginationWatcher.currentPage), paginationWatcher.segmentation).filter(function(singleFeed) {
 								return singleFeed.user.metadata.connections.likes.total >= likesFilter.likesLimit;
 							})
 						)
@@ -263,7 +263,7 @@
 		    	} else {
 		    		scene.render(
 						buildAdsFeedMarkup(
-							adsData.slice((paginationWatcher.currentPage), paginationWatcher.segmentation)
+							feedsData.slice((paginationWatcher.currentPage), paginationWatcher.segmentation)
 						)
 					);
 		    	}
@@ -291,7 +291,7 @@
 				var query = $('#search').val();
 				query = query.replace(/ +(?= )/g,'');
 
-				var feeds = adsData.slice(
+				var feeds = feedsData.slice(
 					(paginationWatcher.currentPage * paginationWatcher.itemsPerPage), 
 					(paginationWatcher.itemsPerPage * paginationWatcher.currentPage) + paginationWatcher.itemsPerPage
 				);
