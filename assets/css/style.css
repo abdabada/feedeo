@@ -1,5 +1,5 @@
 body{
-	background-color: #eee;
+    background-color: #eee;
 }
 
 .list-group-item > .pull-left {
@@ -7,27 +7,21 @@ body{
 }
 
 .video-actions{
-	width: 400px;
+    width: 400px;
 }
-
 
 .container{
-	width: 40% !important;
+    width: 40% !important;
 }
+
 .profile{
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .profile:hover{
-	color: #D60808;
+    color: #D60808;
 }
 
-/*.profile_href{
-	font-weight: bold;
-    color: #14171a !important;
-}*/
-/*****************************/
-/* See more anchor styling */
 .hideContent {
     overflow: hidden;
     line-height: 1em;
@@ -38,35 +32,38 @@ body{
     line-height: 1em;
     height: auto;
 }
+
 .showContent{
     height: auto;
 }
+
 .show-more {
     padding: 10px 0;
 }
 
 .show-text{
-	background:none;
+    background:none;
     border:none; 
     padding:0;
     font: inherit;
     color:#337ab7;
-     /*border is optional*/
-    /*border-bottom:1px solid #444; */
     cursor: pointer;
 }
+
 .video-title{
-	margin-top: 2px;
-	margin-bottom: 5px;
-	font-size: 16px;
+     margin-top: 2px;
+     margin-bottom: 5px;
+     font-size: 16px;
 }
 
 .heart{
     color: #e0245e;
 }
+
 .play{
     color: #17bf63;
 }
+
 .comment{
     color: darkgray;
 }
