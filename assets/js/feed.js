@@ -113,93 +113,74 @@
 			likesLimit: 10
 		};
 
+		/* Markup builder for the feeds-per-page buttons */
+		function feedRunderer(c, s, feedsData){
+			var feeds = feedsData.slice(c, s);
+
+				if (likesFilter.isLikesFilterChecked) {
+					feeds = feeds.filter(function(singleFeed) {
+						return singleFeed.user.metadata.connections.likes.total >= likesFilter.likesLimit;
+					});
+				}
+
+				scene.render(buildAdsFeedMarkup(feeds));
+		}
+
+		/* feeds-per-page handler */
+		function feedsDataSlicer(self_, feedsData){
+			segmentation_helper = parseInt(self_.attr('id'));
+			if (!self_.hasClass('active')) {
+					self_.addClass('active');
+			}
+
+			switch(segmentation_helper) {
+			    case 10:
+			        $('#50').removeClass('active');
+					$('#25').removeClass('active');
+					$('#btn_prev').attr('disabled', true);
+					$('#btn_next').attr('disabled', false);
+			        break;
+			    case 25:
+			        $('#50').removeClass('active');
+					$('#10').removeClass('active');
+					$('#btn_prev').attr('disabled', true);
+					$('#btn_next').attr('disabled', false);
+			        break;
+			    default:
+			    	$('#10').removeClass('active');
+					$('#25').removeClass('active');
+			        $('#btn_prev').attr('disabled', true);
+					$('#btn_next').attr('disabled', true);
+			}			
+
+			paginationWatcher.segmentation = segmentation_helper - 1;
+			paginationWatcher.currentPage = 0;
+
+			feedRunderer(paginationWatcher.segmentation * paginationWatcher.currentPage, paginationWatcher.segmentation, feedsData);
+
+		}
+
+
 		/* Grabs the data from the json file */
 		$.getJSON('./feed.json', function(data) {
 			var feedsData = data.data;
 
 			/* 10-per-page button handler */
 			$('#10').click(function(e) {
-				if (!$(this).hasClass('active')) {
-					$(this).addClass('active');
-				}
-
-				$('#50').removeClass('active');
-				$('#25').removeClass('active');
-
-				$('#btn_prev').attr('disabled', true);
-				$('#btn_next').attr('disabled', false);
-
-				segmentation_helper = parseInt($(this).attr('id'));
-
-				paginationWatcher.segmentation = segmentation_helper - 1;
-				paginationWatcher.currentPage = 0;
-
-				var feeds = feedsData.slice(paginationWatcher.segmentation * paginationWatcher.currentPage, paginationWatcher.segmentation);
-
-				if (likesFilter.isLikesFilterChecked) {
-					feeds = feeds.filter(function(singleFeed) {
-						return singleFeed.user.metadata.connections.likes.total >= likesFilter.likesLimit;
-					});
-				}
-
-				scene.render(buildAdsFeedMarkup(feeds));
+				var self_ = $(this);
+				feedsDataSlicer(self_, feedsData);
 			});
 
 			/* 25-per-page button handler */
 			$('#25').click(function(e) {
-				if (!$(this).hasClass('active')) {
-					$(this).addClass('active');
-				}
-
-				$('#50').removeClass('active');
-				$('#10').removeClass('active');
-
-				$('#btn_prev').attr('disabled', true);
-				$('#btn_next').attr('disabled', false);
-
-				segmentation_helper = parseInt($(this).attr('id'));
-
-				paginationWatcher.segmentation = segmentation_helper - 1;
-				paginationWatcher.currentPage = 0;
-
-				var feeds = feedsData.slice(paginationWatcher.segmentation * paginationWatcher.currentPage, paginationWatcher.segmentation);
-
-				if (likesFilter.isLikesFilterChecked) {
-					feeds = feeds.filter(function(singleFeed) {
-						return singleFeed.user.metadata.connections.likes.total >= likesFilter.likesLimit;
-					});
-				}
-
-				scene.render(buildAdsFeedMarkup(feeds));
-
+				var self_ = $(this);
+				test(self_, feedsData);				
 			});
 
 			/* 50-per-page button handler */
 			$('#50').click(function(e) {
-				if (!$(this).hasClass('active')) {
-					$(this).addClass('active');
-				}
-
-				$('#10').removeClass('active');
-				$('#25').removeClass('active');
-
-				$('#btn_prev').attr('disabled', true);
-				$('#btn_next').attr('disabled', true);
-
-				segmentation_helper = parseInt($(this).attr('id'));
-
-				paginationWatcher.segmentation = segmentation_helper - 1;
-				paginationWatcher.currentPage = 0;
-
-				var feeds = feedsData.slice(paginationWatcher.segmentation * paginationWatcher.currentPage, paginationWatcher.segmentation);
-				
-				if (likesFilter.isLikesFilterChecked) {
-					feeds = feeds.filter(function(singleFeed) {
-						return singleFeed.user.metadata.connections.likes.total >= likesFilter.likesLimit;
-					});
-				}
-
-				scene.render(buildAdsFeedMarkup(feeds));
+				var self_ = $(this);
+				test(self_, feedsData);
 			});
 
 			/* Handles the 'next' button click */
@@ -209,16 +190,8 @@
 				paginationWatcher.currentPage = paginationWatcher.segmentation + 1 ;
 				paginationWatcher.segmentation = paginationWatcher.segmentation + segmentation_helper;
 
-				var feeds = feedsData.slice((paginationWatcher.currentPage), paginationWatcher.segmentation);
-
-				if (likesFilter.isLikesFilterChecked) {
-					feeds = feeds.filter(function(singleFeed) {
-						return singleFeed.user.metadata.connections.likes.total >= likesFilter.likesLimit;
-					});
-				}
-
-				scene.render(buildAdsFeedMarkup(feeds));
-
+				feedRunderer(paginationWatcher.currentPage , paginationWatcher.segmentation, feedsData);
+				
 				if(paginationWatcher.segmentation == (feedsData.length - 1)){
 					$(this).attr('disabled', true);
 					return true;
@@ -233,15 +206,7 @@
 				paginationWatcher.segmentation = paginationWatcher.currentPage - 1;
 				paginationWatcher.currentPage = (paginationWatcher.segmentation + 1) - segmentation_helper;
 			
-				var feeds = feedsData.slice((paginationWatcher.currentPage), paginationWatcher.segmentation);
-
-				if (likesFilter.isLikesFilterChecked) {
-					feeds = feeds.filter(function(singleFeed) {
-						return singleFeed.user.metadata.connections.likes.total >= likesFilter.likesLimit;
-					});
-				}
-
-				scene.render(buildAdsFeedMarkup(feeds));
+				feedRunderer(paginationWatcher.currentPage , paginationWatcher.segmentation, feedsData);
 
 				if (paginationWatcher.currentPage == 0) {
 					$(this).attr('disabled', true);
@@ -255,7 +220,7 @@
 		    	if ($(this).prop('checked')) {
 					scene.render(
 						buildAdsFeedMarkup(
-							feedsData.slice((paginationWatcher.currentPage), paginationWatcher.segmentation).filter(function(singleFeed) {
+							feedsData.slice(paginationWatcher.currentPage, paginationWatcher.segmentation).filter(function(singleFeed) {
 								return singleFeed.user.metadata.connections.likes.total >= likesFilter.likesLimit;
 							})
 						)
@@ -263,7 +228,7 @@
 		    	} else {
 		    		scene.render(
 						buildAdsFeedMarkup(
-							feedsData.slice((paginationWatcher.currentPage), paginationWatcher.segmentation)
+							feedsData.slice(paginationWatcher.currentPage, paginationWatcher.segmentation)
 						)
 					);
 		    	}
@@ -292,8 +257,8 @@
 				query = query.replace(/ +(?= )/g,'');
 
 				var feeds = feedsData.slice(
-					(paginationWatcher.currentPage * paginationWatcher.itemsPerPage), 
-					(paginationWatcher.itemsPerPage * paginationWatcher.currentPage) + paginationWatcher.itemsPerPage
+					(paginationWatcher.currentPage * paginationWatcher.segmentation), 
+					(paginationWatcher.segmentation * paginationWatcher.currentPage) + paginationWatcher.segmentation
 				);
 
 				var $this = $(this); 
@@ -316,7 +281,7 @@
 						} else {
 							$('.panel').fadeOut(200, function(){
 				        		var content = `<div class="panel-heading">
-									    	<h3 class="panel-title">Nothing found :/</h3> 
+									    	<h3 class="panel-title">Nothing found...</h3> 
 									    </div>`;
 
 								$('.panel').html(content).fadeIn(10);	
